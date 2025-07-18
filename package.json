@@ -1,0 +1,29 @@
+{
+  "name": "involet",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mukti2216patel/Involet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mukti2216patel/Involet/issues"
+  },
+  "homepage": "https://github.com/mukti2216patel/Involet#readme",
+  "description": "",
+  "dependencies": {
+    "react-router-dom": "^7.7.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
