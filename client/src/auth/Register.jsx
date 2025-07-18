@@ -73,8 +73,8 @@ function Register() {
         </button>
 
       </form>
-    <button className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold text-lg cursor-pointer shadow hover:from-blue-600 hover:to-cyan-500 transition"
- onClick={()=> toast.success('Home')}>Home</button>
+    {/* <button className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold text-lg cursor-pointer shadow hover:from-blue-600 hover:to-cyan-500 transition"
+ onClick={()=> toast.success('Home')}>Home</button> */}
     </div>
   );
 }
