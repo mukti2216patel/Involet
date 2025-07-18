@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # dependencies
 /node_modules
 
@@ -26,3 +27,9 @@ pnpm-debug.log*
 
 # OS files
 Thumbs.db
+=======
+node_modules/
+.env
+npm-debug.log
+dist/
+>>>>>>> f9a1b955fb34b8bfa5a41bbc3f83c308cd6a09e5

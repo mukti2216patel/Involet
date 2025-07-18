@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "server",
   "version": "1.0.0",
   "main": "app.js",
@@ -11,11 +12,21 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
+=======
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.7.0",
+>>>>>>> f9a1b955fb34b8bfa5a41bbc3f83c308cd6a09e5
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+<<<<<<< HEAD
     "mongoose": "^8.16.4"
+=======
+    "mongoose": "^8.16.4",
+    "nodemailer": "^7.0.5"
+>>>>>>> f9a1b955fb34b8bfa5a41bbc3f83c308cd6a09e5
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
