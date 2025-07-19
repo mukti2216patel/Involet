@@ -1,13 +1,14 @@
 import React from 'react'
 import Sidebar from '../SideBars/Sidebar'
+import { Outlet } from 'react-router-dom'
 
 function Dashboard() {
   return (
     <div className="flex min-h-screen bg-black">
       <Sidebar />
       <main className="flex-1 p-8">
-        {/* Main dashboard content goes here */}
-      </main>
+        <Outlet />
+      </main>   
     </div>
   )
 }

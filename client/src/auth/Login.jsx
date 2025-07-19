@@ -5,9 +5,11 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { useUser } from '../hooks/useUser';
 
 function Login() {
   const navigate = useNavigate();
+  const {login} = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,8 +26,8 @@ function Login() {
       });
       if(res.status === 200)
       {
-        localStorage.setItem('token', res.data.token);
-        toast.success('Login successful');
+        login(res.data.token);
+        toast.success('Login successful');  
         navigate('/dashboard');
       }
       else{
@@ -44,7 +46,7 @@ function Login() {
     try {
       const res = await axios.post('api/v1/auth/login', { email, password });
       if (res.status === 200) {
-        localStorage.setItem('token', res.data.token);
+        login(res.data.token);
         toast.success('Login successful');
         navigate('/dashboard');
       }

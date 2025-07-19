@@ -14,7 +14,7 @@ exports.login = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id , name:user.name , picture:user.picture , email:user.email }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     res.status(200).json({ token, message: "Login successful" });
@@ -76,13 +76,19 @@ exports.googleLogin = async (req, res) => {
                 existing.picture = picture || existing.picture;
                 await existing.save();
             }
-            const token = jwt.sign({id: existing._id}, process.env.JWT_SECRET);
-            res.status(200).json({token, message:"Login successful"});      
+            const token = jwt.sign({id: existing._id , name:existing.name , picture:existing.picture , email:existing.email}, process.env.JWT_SECRET);
+            res.status(200).json({
+              token, 
+              message:"Login successful"
+            });      
         }   
         else{
             const newUser = await userModel.create({name , email , picture , googleId});
-            const token = jwt.sign({id:newUser._id}, process.env.JWT_SECRET);
-            res.status(200).json({token , message:"Login successful"});
+            const token = jwt.sign({id:newUser._id , name:newUser.name , picture:newUser.picture , email:newUser.email }, process.env.JWT_SECRET);
+            res.status(200).json({
+              token, 
+              message:"Login successful"
+            });
         }
     }
     catch(e)
