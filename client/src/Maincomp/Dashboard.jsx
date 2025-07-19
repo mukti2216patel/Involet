@@ -6,8 +6,10 @@ function Dashboard() {
   return (
     <div className="flex min-h-screen bg-black">
       <Sidebar />
-      <main className="flex-1 p-8">
-        <Outlet />
+      <main className="flex-1 p-8 overflow-hidden">
+        <div className="w-full h-full overflow-auto">
+          <Outlet />
+        </div>
       </main>   
     </div>
   )

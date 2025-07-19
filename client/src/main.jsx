@@ -10,10 +10,8 @@ createRoot(document.getElementById('root')).render(
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>  
       <App />
     </GoogleOAuthProvider>
-  </StrictMode>
+  </StrictMode>   
 )
 
-console.log('Client ID being used:', import.meta.env.VITE_GOOGLE_CLIENT_ID);
-console.log('Is client ID defined?', !!import.meta.env.VITE_GOOGLE_CLIENT_ID);
-console.log('Client ID length:', import.meta.env.VITE_GOOGLE_CLIENT_ID?.length);
+  
 

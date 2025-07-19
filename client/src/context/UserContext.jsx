@@ -1,23 +1,51 @@
 import { createContext, useEffect, useState } from 'react';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { toast } from 'react-toastify';
 
 const UserContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const isTokenExpired = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      const isExpired = decoded.exp < currentTime;
+      return isExpired;
+    } catch {
+      return true;
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        setToken(token);
-        setUser(jwtDecode(token));
-      } catch (err) {
-        console.error('Invalid token:', err);
-        localStorage.removeItem('token');
-      }
+    if (!loading && token && isTokenExpired(token)) {
+      logout();
     }
+  }, [token, loading]);
+
+  useEffect(() => {
+    const intialAuth = () => {
+      try {
+        const storeToken = localStorage.getItem('token');
+        if (storeToken && !isTokenExpired(storeToken)) {
+          setToken(storeToken);
+          setUser(jwtDecode(storeToken));
+        } else if (storeToken) {
+          localStorage.removeItem('token');
+          setToken(null);
+          setUser(null);
+        }
+      } catch (err) {
+        console.error('Error initializing auth:', err);
+        toast.error('Error initializing auth');
+      } finally {
+        setLoading(false);
+      }
+    };
+    intialAuth();
   }, []);
 
   const login = (token) => {
@@ -33,7 +61,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, token, login, logout }}>
+    <UserContext.Provider value={{ user, token, login, logout, loading }}>
       {children}
     </UserContext.Provider>
   );
