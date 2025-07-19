@@ -2,19 +2,47 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try{
+      const decode = jwtDecode(credentialResponse.credential);
+      console.log('Google JWT Decoded:', decode);
+      const {name , email , picture , sub} = decode;
+      const res = await axios.post('api/v1/auth/google-login', {
+        name, 
+        email, 
+        picture, 
+        googleId: sub
+      });
+      if(res.status === 200)
+      {
+        localStorage.setItem('token', res.data.token);
+        toast.success('Login successful');
+        navigate('/dashboard');
+      }
+      else{
+        toast.error(res.data.message);  
+      }
+    }
+    catch(e)
+    {
+      console.log('Google login error:', e);
+      toast.error('Google sign-in failed');
+    }
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-
       const res = await axios.post('api/v1/auth/login', { email, password });
-     
       if (res.status === 200) {
         localStorage.setItem('token', res.data.token);
         toast.success('Login successful');
@@ -31,16 +59,16 @@ function Login() {
       toast.error('Invalid credentials');
     }
   }
+  
+  const handleGoogleError = (error) => {
+    console.log(error);
+    toast.error('Google sign-in failed');
+  };
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center">
       <h1 className="text-white font-bold text-4xl mb-10 tracking-wide drop-shadow-lg">
         Welcome to <span className="text-blue-400">Involet</span>
       </h1>
-      {/*
-      <div className="text-gray-400 text-lg italic mb-8 text-center max-w-md drop-shadow">
-        "Empowering your invoices, empowering your business."
-      </div>
-      */}
       <form className="bg-black/60 backdrop-blur-md rounded-2xl shadow-2xl border border-white/10 px-8 py-10 w-full max-w-sm flex flex-col gap-6" onSubmit={handleLogin}>
         <h2 className="text-white text-center m-0 font-semibold tracking-wide text-2xl">Login</h2>
         <input
@@ -65,10 +93,27 @@ function Login() {
         >
           Login
         </button>
+        <div className="flex items-center gap-2 my-2">
+          <div className="flex-1 h-px bg-gray-700" />
+          <span className="text-gray-400 text-sm">or</span>
+          <div className="flex-1 h-px bg-gray-700" />
+        </div>
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            width={300}
+            useOneTap
+            theme="filled_blue"
+            size="large"
+            text="signin_with"
+            shape="rectangular"
+          />
+        </div>
+
         <div className="text-gray-400 text-center mt-2 text-base"
           onClick={() => navigate('/register')}
         >
-
           Don't have an account?
         </div>
       </form>

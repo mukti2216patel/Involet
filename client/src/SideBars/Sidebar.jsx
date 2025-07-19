@@ -35,6 +35,10 @@ const navLinks = [
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  }
   return (
     <aside className="h-[95vh] w-64 bg-[#10141c] border border-[#232a3a] shadow-2xl rounded-2xl flex flex-col justify-between p-6 m-4 mx-2 font-sans">
       <div>
@@ -64,7 +68,9 @@ function Sidebar() {
           U
         </div>
         <div className="text-white font-semibold text-lg tracking-wide">Username</div>
-        <button className="mt-2 px-5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold text-base shadow hover:from-blue-600 hover:to-cyan-500 transition-all duration-200">
+        <button className="mt-2 px-5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold text-base shadow hover:from-blue-600 hover:to-cyan-500 transition-all duration-200"
+        onClick={handleLogout}
+        >
           Logout
         </button>
       </div>

@@ -10,4 +10,8 @@ router.post('/register' ,(req,res)=>{
     authController.register(req,res);
 });
 
+router.post('/google-login', (req, res) => {
+    authController.googleLogin(req, res);
+});
+
 module.exports = router;
