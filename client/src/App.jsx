@@ -8,7 +8,7 @@ import { AuthProvider } from './context/UserContext';
 import { useUser } from './hooks/useUser';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Invoices from './Maincomp/Invoices';
-import Clients from './Maincomp/Clients';
+import Clients from './Maincomp/Clients/Clients';
 import Settings from './Maincomp/Settings';
 import Profile from './Maincomp/Profile';
 
