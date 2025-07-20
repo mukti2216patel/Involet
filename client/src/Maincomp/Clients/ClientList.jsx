@@ -1,14 +1,40 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useClient from '../../hooks/useClient'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+
 function ClientList() {
-  const {setShowAddForm} = useClient();
+  const { setShowAddForm, clients, setClients } = useClient();
+  console.log(clients);
+  useEffect(() => {
+    async function fetchClients() {
+      try {
+        const res = await axios.get('/api/v1/clients/get-clients', {
+          headers: {
+            Authorization: `${localStorage.getItem('token')}`
+          }
+        });
+        if (res.status === 200) {
+          setClients(res.data.clients);
+        }
+        else {
+          toast.error(res.data.message);
+        }
+      }
+      catch (err) {
+        console.log(err);
+        toast.error(err);
+      }
+    }
+    fetchClients();
+  })
   return (
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
         <div className="w-full lg:w-80">
           <div className="relative">
             <input
-              type="text"   
+              type="text"
               placeholder="Search clients by name, company, or email..."
               className="w-full pl-10 pr-4 py-3 border border-[#232a3a] rounded-xl bg-[#10141c] text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
@@ -17,7 +43,7 @@ function ClientList() {
             </svg>
           </div>
         </div>
-        
+
         <div className="flex flex-wrap gap-2 w-full lg:w-auto">
           <select className="px-4 py-3 border border-[#232a3a] rounded-xl bg-[#10141c] text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
             <option>All Status</option>
@@ -28,10 +54,10 @@ function ClientList() {
             Export CSV
           </button>
           <button
-          
-           className="px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-400 text-white rounded-xl hover:from-green-600 hover:to-emerald-500 transition-all duration-200 font-medium shadow-lg"
-           onClick = {() => setShowAddForm(true)}
-           >
+
+            className="px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-400 text-white rounded-xl hover:from-green-600 hover:to-emerald-500 transition-all duration-200 font-medium shadow-lg"
+            onClick={() => setShowAddForm(true)}
+          >
             + Add New Client
           </button>
         </div>
@@ -72,88 +98,57 @@ function ClientList() {
               </tr>
             </thead>
             <tbody className="bg-[#10141c] divide-y divide-[#232a3a]">
-              <tr className="hover:bg-[#1a1f2e] cursor-pointer transition-all duration-200">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <input type="checkbox" className="rounded border-[#232a3a] text-blue-500 focus:ring-blue-500 bg-[#10141c]" />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-white">John Smith</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">Tech Solutions Inc</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">john@techsolutions.com</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">+1 (555) 123-4567</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">15</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">$2,500.00</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
-                    Active
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="flex space-x-3">
-                    <button className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
-                      View
-                    </button>
-                    <button className="text-green-400 hover:text-green-300 transition-colors duration-200">
-                      Edit
-                    </button>
-                    <button className="text-red-400 hover:text-red-300 transition-colors duration-200">
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr className="hover:bg-[#1a1f2e] cursor-pointer transition-all duration-200">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <input type="checkbox" className="rounded border-[#232a3a] text-blue-500 focus:ring-blue-500 bg-[#10141c]" />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-white">Sarah Johnson</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">Design Studio</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">sarah@designstudio.com</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">+1 (555) 987-6543</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">8</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-300">$1,200.00</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
-                    Active
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="flex space-x-3">
-                    <button className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
-                      View
-                    </button>
-                    <button className="text-green-400 hover:text-green-300 transition-colors duration-200">
-                      Edit
-                    </button>
-                    <button className="text-red-400 hover:text-red-300 transition-colors duration-200">
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              {clients && clients.length > 0 ? (
+                clients.map((client) => (
+                  <tr className="hover:bg-[#1a1f2e] cursor-pointer transition-all duration-200" key={client._id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <input type="checkbox" className="rounded border-[#232a3a] text-blue-500 focus:ring-blue-500 bg-[#10141c]" />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-white">{client.name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-300">{client.companyName}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-300">{client.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-300">{client.phone}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-300">{client.totalInvoices || 0}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-300">{client.outstandingBalance || '$0.00'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+                        {client.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-3">
+                        <button className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                          View
+                        </button>
+                        <button className="text-green-400 hover:text-green-300 transition-colors duration-200">
+                          Edit
+                        </button>
+                        <button className="text-red-400 hover:text-red-300 transition-colors duration-200">
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="9" className="px-6 py-8 text-center text-gray-400">
+                    No clients found. Add your first client using the button above.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

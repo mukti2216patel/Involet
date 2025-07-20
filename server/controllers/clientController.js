@@ -3,7 +3,7 @@ const z = require('zod');
 
 const clientSchema = z.object({
   name: z.string().min(2),
-  company: z.string().min(2),
+  companyName: z.string().min(2),
   email: z.string().email(),
   phone: z.string().length(10), 
   billingAddress: z.string().min(10),
@@ -15,7 +15,7 @@ const clientSchema = z.object({
 
 const addclient = async (req, res) => {
   try {
-    const { name, company, email, phone, billingAddress, shippingAddress, taxId, notes, status } = req.body;
+    const { name, companyName, email, phone, billingAddress, shippingAddress, taxId, notes, status } = req.body;
     
     const validation = clientSchema.safeParse(req.body);
     if (!validation.success) {
@@ -27,7 +27,7 @@ const addclient = async (req, res) => {
 
     const client = new clientModel({
       name,
-      company,
+      companyName,
       email,
       phone,
       billingAddress,
@@ -39,13 +39,24 @@ const addclient = async (req, res) => {
     });
     
     await client.save();
-    res.status(200).json({ message: "Client added successfully" });
+    res.status(200).json({ message: "Client added successfully" , client});
   } catch (err) {
     console.error('Add client error:', err);
     res.status(500).json({ message: "Server error" });
   }
 };
-        
+const getClients = async (req, res) => {
+    try{
+        const clients = await clientModel.find({userId : req.user.id});
+        res.status(200).json({ clients });
+    }
+    catch(err){
+        console.error('Get clients error:', err);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
 module.exports = {
-  addclient
+  addclient,
+  getClients
 };

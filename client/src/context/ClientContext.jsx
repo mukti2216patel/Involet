@@ -7,11 +7,14 @@ const ClientProvider = ({ children }) => {
     const [showAddForm, setShowAddForm] = useState(false);
 
     const addClient = (client) => {
-        setClients([...clients, client]);
+        setClients(prevClients => {
+            const newClients = [...prevClients, client];
+            return newClients;
+        });
     }
 
     return(     
-        <ClientContext.Provider value={{clients, showAddForm, setShowAddForm, addClient}}>
+        <ClientContext.Provider value={{clients, showAddForm, setShowAddForm, addClient , setClients}}>
             {children}
         </ClientContext.Provider>
     )
