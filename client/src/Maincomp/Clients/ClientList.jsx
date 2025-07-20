@@ -4,8 +4,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 
 function ClientList() {
-  const { setShowAddForm, clients, setClients } = useClient();
-  console.log(clients);
+  const { setShowAddForm, clients, setClients , setShowClientDetails , setSelectedClientId } = useClient();
   useEffect(() => {
     async function fetchClients() {
       try {
@@ -28,6 +27,7 @@ function ClientList() {
     }
     fetchClients();
   })
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
@@ -129,11 +129,8 @@ function ClientList() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-3">
-                        <button className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                        <button className="text-blue-400 hover:text-blue-300 transition-colors duration-200" onClick={() => {setSelectedClientId(client._id); setShowClientDetails(true); }}>
                           View
-                        </button>
-                        <button className="text-green-400 hover:text-green-300 transition-colors duration-200">
-                          Edit
                         </button>
                         <button className="text-red-400 hover:text-red-300 transition-colors duration-200">
                           Delete

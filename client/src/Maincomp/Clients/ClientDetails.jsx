@@ -1,51 +1,82 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import useClient from '../../hooks/useClient'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 function ClientDetails() {
+  const {setShowClientDetails , selectedClientId} = useClient();  
+  const [currClient , setCurrClient] = useState(null);
+  // console.log(selectedClientId);
+  useEffect(() => {
+    async function fetchClientDetails() {
+      try{
+        const res = await axios.get(`/api/v1/clients/get-client/${selectedClientId}`, {
+          headers: {
+            Authorization: `${localStorage.getItem('token')}`
+          }
+        });
+        if(res.status === 200){
+          setCurrClient(res.data.client);
+        }
+        else{
+          toast.error(res.data.message);
+        }
+      }
+      catch(err)
+      {
+        console.log(err);
+        toast.error(err);
+      }
+    }
+    fetchClientDetails();
+  } , [selectedClientId]);
+
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-10 mx-auto p-6 border border-[#232a3a] w-11/12 md:w-3/4 lg:w-2/3 shadow-2xl rounded-2xl bg-[#10141c]">
         <div className="mt-3">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-xl font-bold text-white">Client Details</h3>
-            <button className="text-gray-400 hover:text-gray-300 transition-colors duration-200">
+            <button className="text-gray-400 hover:text-gray-300 transition-colors duration-200" onClick={() => setShowClientDetails(false)}>
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-[#1a1f2e] p-6 rounded-xl border border-[#232a3a]">
-              <h4 className="text-lg font-semibold text-white mb-6">Client Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Full Name</label>
-                  <p className="text-sm text-white mt-2">John Smith</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Company</label>
-                  <p className="text-sm text-white mt-2">Tech Solutions Inc</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Email</label>
-                  <p className="text-sm text-white mt-2">john@techsolutions.com</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Phone</label>
-                  <p className="text-sm text-white mt-2">+1 (555) 123-4567</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Status</label>
-                  <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full mt-2 bg-green-500/20 text-green-400 border border-green-500/30">
-                    Active
-                  </span>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Outstanding Balance</label>
-                  <p className="text-sm text-white mt-2">$2,500.00</p>
+          {currClient ? (
+            <div className="space-y-6">
+              <div className="bg-[#1a1f2e] p-6 rounded-xl border border-[#232a3a]">
+                <h4 className="text-lg font-semibold text-white mb-6">Client Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300">Full Name</label>
+                    <p className="text-sm text-white mt-2">{currClient.name}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300">Company</label>
+                    <p className="text-sm text-white mt-2">{currClient.companyName}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300">Email</label>
+                    <p className="text-sm text-white mt-2">{currClient.email}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300">Phone</label>
+                    <p className="text-sm text-white mt-2">{currClient.phone}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300">Status</label>
+                    <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full mt-2 bg-green-500/20 text-green-400 border border-green-500/30">
+                      {currClient.status}
+                    </span>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300">Outstanding Balance</label>
+                      <p className="text-sm text-white mt-2">1234</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
             <div className="border-b border-[#232a3a]">
               <nav className="-mb-px flex space-x-8">
@@ -126,9 +157,14 @@ function ClientDetails() {
               </button>
             </div>
           </div>
+        ) : (
+          <div className="text-center py-8">
+            <div className="text-gray-400">Loading client details...</div>
+          </div>
+        )}
         </div>
       </div>
-    </div>
+    </div>  
   )
 }
 

@@ -1,10 +1,12 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 const ClientContext = createContext();  
 
 const ClientProvider = ({ children }) => {
     const [clients, setClients] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
+    const [showClientDetails, setShowClientDetails] = useState(false);
+    const [selectedClientId, setSelectedClientId] = useState(null);
 
     const addClient = (client) => {
         setClients(prevClients => {
@@ -13,8 +15,12 @@ const ClientProvider = ({ children }) => {
         });
     }
 
+    useEffect(() => {
+        console.log(showClientDetails);
+    },[showClientDetails]); 
+    
     return(     
-        <ClientContext.Provider value={{clients, showAddForm, setShowAddForm, addClient , setClients}}>
+        <ClientContext.Provider value={{clients, showAddForm, setShowAddForm, addClient , setClients , showClientDetails , setShowClientDetails , selectedClientId , setSelectedClientId}}>
             {children}
         </ClientContext.Provider>
     )

@@ -6,7 +6,7 @@ import {ClientProvider} from '../../context/ClientContext'
 import useClient from '../../hooks/useClient'
 
 function ClientsContent() {
-  const {showAddForm} = useClient();
+  const {showAddForm , showClientDetails} = useClient();
   return (
     <div className="w-full">
       <div className="mb-8">
@@ -16,6 +16,7 @@ function ClientsContent() {
 
       <ClientList />
       {showAddForm && <AddClientForm />}
+      {showClientDetails && <ClientDetails />}
     </div>
   )
 }
