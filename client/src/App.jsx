@@ -11,6 +11,8 @@ import Invoices from './Maincomp/Invoices';
 import Clients from './Maincomp/Clients/Clients';
 import Settings from './Maincomp/Settings';
 import Profile from './Maincomp/Profile';
+import AddInvoice from './Maincomp/AddInvoice';
+import DesignInvoice from './Maincomp/DesignInvoice';
 
 function AppRoutes() {
   const { loading } = useUser();
@@ -32,6 +34,8 @@ function AppRoutes() {
         <Route path='/dashboard' element={<Dashboard />}>
           <Route index element={<div className="text-white text-2xl">Welcome to Dashboard! Navigate using the sidebar.</div>} />
           <Route path='invoices' element={<Invoices />} />
+          <Route path='invoices/new' element={<AddInvoice />} />
+          <Route path='invoices/design' element={<DesignInvoice />} />
           <Route path='clients' element={<Clients />} />
           <Route path='settings' element={<Settings />} />
           <Route path='profile' element={<Profile />} />  
