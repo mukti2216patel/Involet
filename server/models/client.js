@@ -10,7 +10,7 @@ const clientSchema = new mongoose.Schema({
   shippingAddress: { type: String, required: true },
   taxId: { type: String, required: true },
   notes: { type: String, required: true },
-  status: { type: String, required: true },
+  status: { type: String, required: true , default : "Active"},
   userId :{type : mongoose.Schema.Types.ObjectId , ref : userModel , required : true},
   createdAt: { type: Date, default: Date.now },
 });

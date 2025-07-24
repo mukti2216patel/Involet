@@ -1,20 +1,40 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import useClient from '../../hooks/useClient'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
 function ClientList() {
   const { setShowAddForm, clients, setClients , setShowClientDetails , setSelectedClientId } = useClient();
+  const [status, setStatus] = useState('All Status');
+  const [filteredClients, setFilteredClients] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    setFilteredClients(clients.filter(client => client.name.toLowerCase().includes(e.target.value.toLowerCase()) || client.companyName.toLowerCase().includes(e.target.value.toLowerCase()) || client.email.toLowerCase().includes(e.target.value.toLowerCase()) || client.phone.toLowerCase().includes(e.target.value.toLowerCase())));
+  };
+
+  const handleStatusChange = (e) => {
+    const newStatus = e.target.value;
+    setStatus(newStatus);
+    if (newStatus === 'All Status') {
+      setFilteredClients(clients);
+    } else {
+      setFilteredClients(clients.filter(client => client.status === newStatus));
+    }
+  };
+
   useEffect(() => {
     async function fetchClients() {
       try {
+        const token = localStorage.getItem('token');
+        const headers = token ? { Authorization: token } : {};
         const res = await axios.get('/api/v1/clients/get-clients', {
-          headers: {
-            Authorization: `${localStorage.getItem('token')}`
-          }
+          headers
         });
         if (res.status === 200) {
           setClients(res.data.clients);
+          setFilteredClients(res.data.clients);
         }
         else {
           toast.error(res.data.message);
@@ -26,7 +46,18 @@ function ClientList() {
       }
     }
     fetchClients();
-  })
+  } , []);
+
+  useEffect(() => {
+    setFilteredClients(clients);
+  }, [clients]);
+
+  const handleViewClick = (e , clientId) => {
+    e.stopPropagation();
+    setSelectedClientId(clientId);
+    setShowClientDetails(true);
+  }
+
 
   return (
     <div className="space-y-6">
@@ -35,6 +66,8 @@ function ClientList() {
           <div className="relative">
             <input
               type="text"
+              value={searchQuery}
+              onChange={handleSearch}
               placeholder="Search clients by name, company, or email..."
               className="w-full pl-10 pr-4 py-3 border border-[#232a3a] rounded-xl bg-[#10141c] text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
@@ -45,7 +78,7 @@ function ClientList() {
         </div>
 
         <div className="flex flex-wrap gap-2 w-full lg:w-auto">
-          <select className="px-4 py-3 border border-[#232a3a] rounded-xl bg-[#10141c] text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+          <select value={status} onChange={handleStatusChange} className="px-4 py-3 border border-[#232a3a] rounded-xl bg-[#10141c] text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
             <option>All Status</option>
             <option>Active</option>
             <option>Archived</option>
@@ -98,8 +131,8 @@ function ClientList() {
               </tr>
             </thead>
             <tbody className="bg-[#10141c] divide-y divide-[#232a3a]">
-              {clients && clients.length > 0 ? (
-                clients.map((client) => (
+              {filteredClients && filteredClients.length > 0 ? (
+                filteredClients.map((client) => (
                   <tr className="hover:bg-[#1a1f2e] cursor-pointer transition-all duration-200" key={client._id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input type="checkbox" className="rounded border-[#232a3a] text-blue-500 focus:ring-blue-500 bg-[#10141c]" />
@@ -123,13 +156,16 @@ function ClientList() {
                       <div className="text-sm text-gray-300">{client.outstandingBalance || '$0.00'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+                      <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full 
+                        ${client.status === 'Active' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : ''}
+                        ${client.status === 'Archived' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : ''}
+                      `}>
                         {client.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-3">
-                        <button className="text-blue-400 hover:text-blue-300 transition-colors duration-200" onClick={() => {setSelectedClientId(client._id); setShowClientDetails(true); }}>
+                        <button onClickCapture={(e) => handleViewClick(e, client._id)} className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
                           View
                         </button>
                         <button className="text-red-400 hover:text-red-300 transition-colors duration-200">

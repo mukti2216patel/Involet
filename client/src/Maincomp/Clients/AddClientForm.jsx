@@ -25,10 +25,10 @@ function AddClientForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: token } : {};
       const res = await axios.post('/api/v1/clients/add-client', client , {
-        headers: {
-          Authorization: `${localStorage.getItem('token')}`
-        }
+        headers
       });
       if(res.status === 200){
         toast.success('Client added successfully');

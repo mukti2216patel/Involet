@@ -1,36 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import useClient from '../../hooks/useClient'
-import axios from 'axios'
-import { toast } from 'react-toastify'
 
 function ClientDetails() {
-  const {setShowClientDetails , selectedClientId} = useClient();  
-  const [currClient , setCurrClient] = useState(null);
-  // console.log(selectedClientId);
+  const { setShowClientDetails, currClient  , clients, setCurrClient , selectedClientId } = useClient();  
   useEffect(() => {
-    async function fetchClientDetails() {
-      try{
-        const res = await axios.get(`/api/v1/clients/get-client/${selectedClientId}`, {
-          headers: {
-            Authorization: `${localStorage.getItem('token')}`
-          }
-        });
-        if(res.status === 200){
-          setCurrClient(res.data.client);
-        }
-        else{
-          toast.error(res.data.message);
-        }
-      }
-      catch(err)
-      {
-        console.log(err);
-        toast.error(err);
-      }
-    }
-    fetchClientDetails();
-  } , [selectedClientId]);
-
+    console.log(selectedClientId);
+    const client = clients.find(client => client._id === selectedClientId);
+    setCurrClient(client);
+  }, [selectedClientId]);
+  
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-10 mx-auto p-6 border border-[#232a3a] w-11/12 md:w-3/4 lg:w-2/3 shadow-2xl rounded-2xl bg-[#10141c]">
@@ -67,7 +45,7 @@ function ClientDetails() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-300">Status</label>
-                    <span className="inline-flex px-3 py-1 text-xs font-semibold rounded-full mt-2 bg-green-500/20 text-green-400 border border-green-500/30">
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full mt-2 ${currClient.status === 'Active' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : ''} ${currClient.status === 'Archived' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' : ''}`}>
                       {currClient.status}
                     </span>
                   </div>

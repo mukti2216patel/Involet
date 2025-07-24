@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './Maincomp/Dashboard';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
-import { AuthProvider } from './context/UserContext'; 
+import { AuthProvider } from './context/UserContext';
 import { useUser } from './hooks/useUser';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Invoices from './Maincomp/Invoices';
@@ -13,6 +13,7 @@ import Settings from './Maincomp/Settings';
 import Profile from './Maincomp/Profile';
 import AddInvoice from './Maincomp/AddInvoice';
 import DesignInvoice from './Maincomp/DesignInvoice';
+import { ClientProvider } from './context/ClientContext';
 
 function AppRoutes() {
   const { loading } = useUser();
@@ -38,7 +39,7 @@ function AppRoutes() {
           <Route path='invoices/design' element={<DesignInvoice />} />
           <Route path='clients' element={<Clients />} />
           <Route path='settings' element={<Settings />} />
-          <Route path='profile' element={<Profile />} />  
+          <Route path='profile' element={<Profile />} />
         </Route>
       </Route>
     </Routes>
@@ -48,10 +49,13 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ClientProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+        <ToastContainer position="top-right" autoClose={3000} />
+      </ClientProvider>
+
     </AuthProvider>
   );
 }

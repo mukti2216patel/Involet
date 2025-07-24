@@ -50,7 +50,7 @@ function Sidebar() {
     navigate('/login');
   }
   return (
-    <aside className="h-[95vh] w-64 bg-[#10141c] border border-[#232a3a] shadow-2xl rounded-2xl flex flex-col justify-between p-6 m-4 mx-2 font-sans">
+    <aside className="min-h-screen w-64 bg-[#10141c] border border-[#232a3a] shadow-2xl rounded-2xl flex flex-col justify-between p-6 m-4 mx-2 font-sans">
       <div>
         <div className="flex items-center gap-3 mb-12">
           <span className="text-3xl font-extrabold text-white drop-shadow-lg tracking-tight">Involet</span>

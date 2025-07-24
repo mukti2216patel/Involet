@@ -1,63 +1,71 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import ClientContext from '../context/ClientContext';
 
-// Mock client list
-const clients = [
-  {
-    id: 1,
-    name: 'John Doe',
-    company: 'Acme Corp',
-    address: '456 Client Ave, Metropolis',
-    email: 'john.doe@acme.com',
-    phone: '+1 987 654 3210',
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    company: 'Beta LLC',
-    address: '789 Beta Rd, Gotham',
-    email: 'jane.smith@beta.com',
-    phone: '+1 555 123 4567',
-  },
-];
-
-const selectedClient = clients[0];
 
 function AddInvoice() {
+  const { clients, selectedClientId, setSelectedClientId } = useContext(ClientContext);
+
+  const selectedClient = clients.find(c => c.id === selectedClientId) || {};
+
+  const [businessDetails, setBusinessDetails] = useState({
+    name: '',
+    address: '',
+    email: '',
+    phone: '',  
+  });
+
+  const handleBusinessDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setBusinessDetails({ ...businessDetails, [name]: value });
+  };
+
+  const handleClientChange = (e) => {
+    const clientId = e.target.value;
+    const client = clients.find(c => c.id === clientId);
+    if (client) setSelectedClientId(client.id);
+  };
+
+
+
+
   return (
     <div className="w-full min-h-[80vh] p-6 flex flex-col items-center">
       <div className="w-full max-w-3xl bg-[#181e2a] border border-[#232a3a] rounded-2xl shadow-xl p-8 flex flex-col gap-8">
         <h1 className="text-3xl font-bold text-white mb-2">Create New Invoice</h1>
         <form className="flex flex-col gap-8">
-          {/* From Address (Your Business) */}
           <div>
             <h2 className="text-lg font-bold text-blue-400 mb-2">From (Your Business)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Company Name" value="Involet Solutions" readOnly />
-              <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Address" value="123 Main St, City, Country" readOnly />
-              <input type="email" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Email" value="info@involet.com" readOnly />
-              <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Phone" value="+1 234 567 8900" readOnly />
+              <input type="text" name='name' value={businessDetails.name} onChange={handleBusinessDetailsChange} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Company Name" />
+              <input type="text" name='address' value={businessDetails.address} onChange={handleBusinessDetailsChange} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Address" />
+              <input type="email" name='email' value={businessDetails.email} onChange={handleBusinessDetailsChange} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Email" />
+              <input type="text" name='phone' value={businessDetails.phone} onChange={handleBusinessDetailsChange} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Phone" />
             </div>
           </div>
-          {/* To Address (Client) */}
           <div>
             <h2 className="text-lg font-bold text-blue-400 mb-2">To (Client)</h2>
             <div className="mb-2">
               <label className="block text-gray-300 font-medium mb-1">Select Client</label>
-              <select className="w-full px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]">
-                {clients.map(client => (
-                  <option key={client.id} value={client.id}>{client.name} ({client.company})</option>
-                ))}
+              <select value={selectedClientId || ""} onChange={handleClientChange} className="w-full px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]">
+                {clients.length === 0 ? (
+                  <option disabled>No clients found</option>
+                ) : (
+                  clients.map(client => (
+                    <option key={client.id} value={client.id}>
+                      {client.name} ({client.company}) {client.address} {client.email} {client.phone}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Client Name" value={selectedClient.name} readOnly />
-              <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Company" value={selectedClient.company} readOnly />
-              <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Address" value={selectedClient.address} readOnly />
-              <input type="email" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Email" value={selectedClient.email} readOnly />
-              <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Phone" value={selectedClient.phone} readOnly />
+              <input type="text" name='name' value={selectedClient.name || ""} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Client Name" readOnly />
+              <input type="text" name='company' value={selectedClient.company || ""} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Company" readOnly />
+              <input type="text" name='address' value={selectedClient.address || ""} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Address" readOnly />
+              <input type="email" name='email' value={selectedClient.email || ""} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Email" readOnly />
+              <input type="text" name='phone' value={selectedClient.phone || ""} className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Phone" readOnly />
             </div>
           </div>
-          {/* Invoice Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Invoice Number" value="INV-001" readOnly />
             <input type="date" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" value="2024-06-01" readOnly />
@@ -68,7 +76,6 @@ function AddInvoice() {
               <option>Overdue</option>
             </select>
           </div>
-          {/* Itemized List */}
           <div>
             <h2 className="text-lg font-bold text-blue-400 mb-2">Invoice Items</h2>
             <div className="overflow-x-auto">
@@ -104,14 +111,12 @@ function AddInvoice() {
               </table>
             </div>
           </div>
-          {/* Summary */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Subtotal" value="$1200.00" readOnly />
             <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Tax" value="$120.00" readOnly />
             <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Discount" value="$0.00" readOnly />
             <input type="text" className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a] font-bold text-lg" placeholder="Total" value="$1320.00" readOnly />
           </div>
-          {/* Notes & Terms */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <textarea className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Notes" value="Thank you for your business! Payment is due within 14 days." rows={2} readOnly />
             <textarea className="px-4 py-2 rounded-lg bg-[#10141c] text-white border border-[#232a3a]" placeholder="Payment Terms" value="Please make payment to the bank details provided. Late payments may incur a fee." rows={2} readOnly />
